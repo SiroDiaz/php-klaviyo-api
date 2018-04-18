@@ -4,7 +4,8 @@ namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
 
-class KlaviyoList {
+class KlaviyoList
+{
     private $apiKey;
     private $client;
     private $baseUrl = 'https://a.klaviyo.com/api/v1';
@@ -121,7 +122,6 @@ class KlaviyoList {
      */
     public function memberExistsInList($listId, $email)
     {
-
     }
 
     /**
@@ -129,7 +129,6 @@ class KlaviyoList {
      */
     public function memberExistsInSegment($segmentId, $email)
     {
-
     }
 
     /**

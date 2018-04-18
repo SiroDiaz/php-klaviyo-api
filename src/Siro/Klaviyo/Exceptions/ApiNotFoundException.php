@@ -1,8 +1,10 @@
 <?php
 
 namespace Siro\Klaviyo\Exceptions;
+
 use Exception;
 
-class ApiNotFoundException extends Exception {
+class ApiNotFoundException extends Exception
+{
 
 }

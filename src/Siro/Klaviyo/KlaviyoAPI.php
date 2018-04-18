@@ -4,7 +4,8 @@ namespace Siro\Klaviyo;
 
 use Exceptions\ApiNotFoundException;
 
-class KlaviyoAPI {
+class KlaviyoAPI
+{
     private $apiKey;
     private $listApi = null;
     private $profileApi = null;
@@ -35,5 +36,4 @@ class KlaviyoAPI {
         // throw exception
         throw new ApiNotFoundException();
     }
-
 }
