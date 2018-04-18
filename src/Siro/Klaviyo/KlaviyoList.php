@@ -122,6 +122,28 @@ class KlaviyoList
      */
     public function memberExistsInList($listId, $email)
     {
+        $emailFormat = $email;
+        if (is_array($email)) {
+            $emailFormat = implode(',', $email);
+        }
+        $options = [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'email'   => $emailFormat
+            ]
+        ];
+        $response = $this->client->get("{$this->baseUrl}/list/{$listId}/members", $options);
+
+        if ($response->getStatusCode() === 200) {
+            $resObj = json_decode((string) $response->getBody());
+            if (is_array($email)) {
+                return $resObj->total === count($email);
+            }
+            
+            return (bool) $resObj->total;
+        }
+
+        return null;
     }
 
     /**
@@ -129,6 +151,42 @@ class KlaviyoList
      */
     public function memberExistsInSegment($segmentId, $email)
     {
+        $emailFormat = $email;
+        if (is_array($email)) {
+            $emailFormat = implode(',', $email);
+        }
+        $options = [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'email'   => $emailFormat
+            ]
+        ];
+        $response = $this->client->get("{$this->baseUrl}/segment/{$segmentId}/members", $options);
+
+        if ($response->getStatusCode() === 200) {
+            $resObj = json_decode((string) $response->getBody());
+            if (is_array($email)) {
+                return $resObj->total === count($email);
+            }
+            
+            return (bool) $resObj->total;
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if the email/s are submited in a list or segment
+     *
+     * @param string $id
+     * @param mixed $email
+     * @param string $type List or segment
+     *
+     * @return bool True if all emails are inside the list or segment.
+     */
+    public function memberExists($id, $email, $type = 'list')
+    {
+        return true;
     }
 
     /**
