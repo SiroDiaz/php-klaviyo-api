@@ -16,13 +16,10 @@ class KlaviyoList extends KlaviyoResponse
         'manually_excluded'
     ];
 
-    public function __construct($apiKey)
+    public function __construct($client)
     {
         $this->apiKey = $apiKey;
-        $this->client = new Client([
-            'base_uri' => KlaviyoAPI::$baseUrl,
-            'timeout'  => 2.0,
-        ]);
+        $this->client = $client;
     }
 
     /**
