@@ -2,19 +2,23 @@
 
 namespace Siro\Klaviyo;
 
-use Exceptions\ApiNotFoundException;
+use Exception;
+use GuzzleHttp\Client;
 
 class KlaviyoAPI
 {
     private $apiKey;
+    private $eventApi = null;
     private $listApi = null;
     private $profileApi = null;
     private $metricApi = null;
+    public static $baseUrl = 'https://a.klaviyo.com';
 
     private $apiClasses = [
-        'listApi' => '\\Siro\\Klaviyo\\KlaviyoList',
+        'eventApi'   => '\\Siro\\Klaviyo\\KlaviyoEvent',
+        'listApi'    => '\\Siro\\Klaviyo\\KlaviyoList',
         'profileApi' => '\\Siro\\Klaviyo\\KlaviyoProfile',
-        'metricApi' => '\\Siro\\Klaviyo\\KlaviyoMetric',
+        'metricApi'  => '\\Siro\\Klaviyo\\KlaviyoMetric',
     ];
 
     public function __construct($apiKey)
@@ -34,6 +38,6 @@ class KlaviyoAPI
             return $this->$apiType;
         }
         // throw exception
-        throw new ApiNotFoundException();
+        throw new Exception("$api api is not defined");
     }
 }

@@ -4,11 +4,10 @@ namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
 
-class KlaviyoList
+class KlaviyoList extends KlaviyoResponse
 {
     private $apiKey;
     private $client;
-    private $baseUrl = 'https://a.klaviyo.com';
     private static $unsubscribeReasons = [
         'unsubscribed',
         'bounced',
@@ -21,28 +20,19 @@ class KlaviyoList
     {
         $this->apiKey = $apiKey;
         $this->client = new Client([
-            'base_uri' => $this->baseUrl,
+            'base_uri' => KlaviyoAPI::$baseUrl,
             'timeout'  => 2.0,
         ]);
     }
 
     /**
-     * 
+     * Checks if the reason provided is valid.
+     *
+     * @param string $reason The type of reason
      */
     private function isValidUnsubscribeReason($reason)
     {
         return in_array($reason, self::$unsubscribeReasons);
-    }
-
-    /**
-     * 
-     */
-    private function sendResponseAsObject($response) {
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
     }
 
     /**
