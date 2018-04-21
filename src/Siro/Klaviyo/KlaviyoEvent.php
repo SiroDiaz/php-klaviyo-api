@@ -28,13 +28,14 @@ class KlaviyoEvent extends KlaviyoResponse
     /**
      * GET /api/track
      */
-    public function track($event, array $userData, array $properties)
+    public function track($event, array $customerProperties, array $properties, $timestamp = null)
     {
         $data = [
             'token' => $this->apiKey,
             'event' => $event,
-            'customer_properties' => $userData,
+            'customer_properties' => $customerProperties,
             'properties' => $properties,
+            'time' => $timestamp
         ];
 
         $response = $this->client->get('/api/track', [
