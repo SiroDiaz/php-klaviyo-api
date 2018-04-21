@@ -8,15 +8,41 @@ class KlaviyoList
 {
     private $apiKey;
     private $client;
-    private $baseUrl = 'https://a.klaviyo.com/api/v1';
+    private $baseUrl = 'https://a.klaviyo.com';
+    private static $unsubscribeReasons = [
+        'unsubscribed',
+        'bounced',
+        'invalid_email',
+        'reported_spam',
+        'manually_excluded'
+    ];
 
     public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
         $this->client = new Client([
-            'base_uri' => '',
+            'base_uri' => $this->baseUrl,
             'timeout'  => 2.0,
         ]);
+    }
+
+    /**
+     * 
+     */
+    private function isValidUnsubscribeReason($reason)
+    {
+        return in_array($reason, self::$unsubscribeReasons);
+    }
+
+    /**
+     * 
+     */
+    private function sendResponseAsObject($response) {
+        if ($response->getStatusCode() === 200) {
+            return json_decode((string) $response->getBody());
+        }
+
+        return null;
     }
 
     /**
@@ -24,7 +50,7 @@ class KlaviyoList
      */
     public function getLists($type = null, $page = 0, $count = 20)
     {
-        $response = $this->client->get($this->baseUrl .'/lists', [
+        $response = $this->client->get("/api/v1/lists", [
             'query' => [
                 'api_key' => $this->apiKey,
                 'type' => $type,
@@ -33,11 +59,7 @@ class KlaviyoList
             ]
         ]);
 
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -52,13 +74,9 @@ class KlaviyoList
                 'list_type' => $listType,
             ]
         ];
-        $response = $this->client->post($this->baseUrl . '/lists', $requestParams);
+        $response = $this->client->post("/api/v1/lists", $requestParams);
         
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-        
-        return null;
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -66,17 +84,13 @@ class KlaviyoList
      */
     public function get($listId)
     {
-        $response = $this->client->get("{$this->baseUrl}/list/{$listId}", [
+        $response = $this->client->get("/api/v1/list/{$listId}", [
             'query' => [
                 'api_key' => $this->apiKey
             ]
         ]);
 
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -90,13 +104,9 @@ class KlaviyoList
                 'name' => $name
             ]
         ];
-        $response = $this->client->put("{$this->baseUrl}/list/{$listId}", $requestParams);
+        $response = $this->client->put("/api/v1/list/{$listId}", $requestParams);
         
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-        
-        return null;
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -104,17 +114,13 @@ class KlaviyoList
      */
     public function delete($listId)
     {
-        $response = $this->client->delete("{$this->baseUrl}/list/{$listId}", [
+        $response = $this->client->delete("/api/v1/list/{$listId}", [
             'query' => [
                 'api_key' => $this->apiKey
             ]
         ]);
 
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -132,7 +138,7 @@ class KlaviyoList
                 'email'   => $emailFormat
             ]
         ];
-        $response = $this->client->get("{$this->baseUrl}/list/{$listId}/members", $options);
+        $response = $this->client->get("/api/v1/list/{$listId}/members", $options);
 
         if ($response->getStatusCode() === 200) {
             $resObj = json_decode((string) $response->getBody());
@@ -161,7 +167,7 @@ class KlaviyoList
                 'email'   => $emailFormat
             ]
         ];
-        $response = $this->client->get("{$this->baseUrl}/segment/{$segmentId}/members", $options);
+        $response = $this->client->get("/api/v1/segment/{$segmentId}/members", $options);
 
         if ($response->getStatusCode() === 200) {
             $resObj = json_decode((string) $response->getBody());
@@ -186,7 +192,13 @@ class KlaviyoList
      */
     public function memberExists($id, $email, $type = 'list')
     {
-        return true;
+        if ($type === 'list') {
+            return $this->memberExistsInList($id, $email);
+        } else if ($type === 'segment') {
+            return $this->memberExistsInSegment($id, $email);
+        } else {
+            throw new \Exception('type not allowed. Only "list" and "segment"');
+        }
     }
 
     /**
@@ -205,12 +217,8 @@ class KlaviyoList
         if (count($properties) > 0) {
             $formParams['form_params']['properties'] = json_encode($properties);
         }
-        $response = $this->client->post("{$this->baseUrl}/list/{$listId}/members", $formParams);
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
+        $response = $this->client->post("/api/v1/list/{$listId}/members", $formParams);
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -219,14 +227,12 @@ class KlaviyoList
     public function addMembers($listId, array $users, $confirm = true)
     {
         if (!count($users)) {
-            //TODO throw exception
-            return null;
+            return false;
         }
 
         foreach ($users as $user) {
             if (!array_key_exists('email', $user)) {
-                //TODO throw exception
-                return null;
+                throw new \Exception('"email" key not found');
             }
         }
 
@@ -237,12 +243,8 @@ class KlaviyoList
                 'confirm_optin' => $confirm,
             ]
         ];
-        $response = $this->client->post("{$this->baseUrl}/list/{$listId}/members/batch", $formParams);
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
-        }
-
-        return null;
+        $response = $this->client->post("/api/v1/list/{$listId}/members/batch", $formParams);
+        return $this->sendResponseAsObject($response);
     }
 
     /**
@@ -262,11 +264,99 @@ class KlaviyoList
             ]
         ];
 
-        $response = $this->client->delete("{$this->baseUrl}/list/{$listId}/members", $formParams);
-        if ($response->getStatusCode() === 200) {
-            return json_decode((string) $response->getBody());
+        $response = $this->client->delete("/api/v1/list/{$listId}/members", $formParams);
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * POST /api/v1/list/{{ LIST_ID }}/members/exclude
+     */
+    public function unsubscribe($listId, $email, $timestamp = -1)
+    {
+        $formParams = [
+            'form_params' => [
+                'api_key' => $this->apiKey,
+                'email'   => $email
+            ]
+        ];
+
+        if ($timestamp !== -1) {
+            $formParams['form_params']['timestamp'] = $timestamp;
         }
 
-        return null;
+        $response = $this->client->post(
+            "/api/v1/list/{$listId}/members/exclude",
+            $formParams
+        );
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * GET /api/v1/list/{{ LIST_ID }}/exclusions
+     */
+    public function getListExclusions($listId, $reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
+    {
+        if (!$this->isValidUnsubscribeReason($reason)) {
+            throw new \Exception('Invalid unsubscribe reason');
+        }
+        
+        $options = [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'reason'  => $reason,
+                'sort'    => $sort,
+                'page'    => $page,
+                'count'   => $count
+            ]
+        ];
+        $response = $this->client->get("/api/v1/list/{$listId}/exclusions", $options);
+
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * GET /api/v1/people/exclusions
+     */
+    public function getExclusions($reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
+    {
+        if (!$this->isValidUnsubscribeReason($reason)) {
+            throw new \Exception('Invalid unsubscribe reason');
+        }
+        
+        $options = [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'reason'  => $reason,
+                'sort'    => $sort,
+                'page'    => $page,
+                'count'   => $count
+            ]
+        ];
+        $response = $this->client->get("/api/v1/people/exclusions", $options);
+
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * POST /api/v1/people/exclusions
+     */
+    public function excludeFromAll($email, $timestamp = -1)
+    {
+        $formParams = [
+            'form_params' => [
+                'api_key' => $this->apiKey,
+                'email'   => $email
+            ]
+        ];
+
+        if ($timestamp !== -1) {
+            $formParams['form_params']['timestamp'] = $timestamp;
+        }
+
+        $response = $this->client->post(
+            "/api/v1/list/{$listId}/people/exclusions",
+            $formParams
+        );
+        return $this->sendResponseAsObject($response);
     }
 }
