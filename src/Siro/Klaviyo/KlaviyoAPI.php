@@ -13,13 +13,15 @@ class KlaviyoAPI
     private $listApi = null;
     private $profileApi = null;
     private $metricApi = null;
+    private $templateApi = null;
     public static $baseUrl = 'https://a.klaviyo.com';
 
     private $apiClasses = [
-        'eventApi'   => '\\Siro\\Klaviyo\\KlaviyoEvent',
-        'listApi'    => '\\Siro\\Klaviyo\\KlaviyoList',
-        'profileApi' => '\\Siro\\Klaviyo\\KlaviyoProfile',
-        'metricApi'  => '\\Siro\\Klaviyo\\KlaviyoMetric',
+        'eventApi'    => '\\Siro\\Klaviyo\\KlaviyoEvent',
+        'listApi'     => '\\Siro\\Klaviyo\\KlaviyoList',
+        'profileApi'  => '\\Siro\\Klaviyo\\KlaviyoProfile',
+        'metricApi'   => '\\Siro\\Klaviyo\\KlaviyoMetric',
+        'templateApi' => '\\Siro\\Klaviyo\\KlaviyoTemplate',
     ];
 
     public function __construct($apiKey)
