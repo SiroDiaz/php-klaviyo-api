@@ -73,7 +73,8 @@ class KlaviyoMetric extends KlaviyoResponse
         $data = [
             'query' => [
                 'api_key' => $this->apiKey,
-                'count'   => $count
+                'count'   => $count,
+                'sort'    => $sort
             ]
         ];
         if (!is_null($since)) {
@@ -102,8 +103,10 @@ class KlaviyoMetric extends KlaviyoResponse
         if (!is_null($end) && $this->isValidDate($end)) {
             $data['query']['end_date'] = $end;
         }
-        if (!is_empty($by)) {
+        if (is_null($where) && !is_empty($by)) {
             $data['query']['by'] = urlencode($by);
+        } else if (!is_null($where) && is_array($where) && is_empty($by)) {
+            $data['query']['where'] = json_encode(array_values($where));
         }
 
         $response = $this->client->get('/api/v1/metric/{$metricId}/export', $data);
