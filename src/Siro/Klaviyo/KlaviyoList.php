@@ -16,7 +16,7 @@ class KlaviyoList extends KlaviyoResponse
         'manually_excluded'
     ];
 
-    public function __construct($client)
+    public function __construct($apiKey, $client)
     {
         $this->apiKey = $apiKey;
         $this->client = $client;
