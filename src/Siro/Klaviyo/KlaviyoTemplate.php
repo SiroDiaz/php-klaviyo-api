@@ -118,10 +118,15 @@ class KlaviyoTemplate extends KlaviyoResponse
                 'from_email' => $fromEmail,
                 'from_name'  => $fromName,
                 'subject'    => $subject,
-                'to'         => $to,
                 'context'    => json_encode($context)
             ]
         ];
+
+        if (is_array($to)) {
+            $to = json_encode($to);
+        }
+        $requestParams['form_params']['to'] = $to;
+
         $response = $this->client->post("/api/v1/email-template/{$templateId}/send", $requestParams);
         return $this->sendResponseAsObject($response);
     }
