@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<phpunit colors="true"
+		 syntaxCheck="false"
+		 stopOnFailure="true"
+		 bootstrap="tests/bootstrap.php">
+	<testsuites>
+        <testsuite name="Klaviyo API tests">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
