@@ -14,6 +14,7 @@ class KlaviyoAPI
     private $profileApi = null;
     private $metricApi = null;
     private $templateApi = null;
+    private $campaignApi = null;
     public static $baseUrl = 'https://a.klaviyo.com';
 
     private $apiClasses = [
@@ -22,6 +23,7 @@ class KlaviyoAPI
         'profileApi'  => '\\Siro\\Klaviyo\\KlaviyoProfile',
         'metricApi'   => '\\Siro\\Klaviyo\\KlaviyoMetric',
         'templateApi' => '\\Siro\\Klaviyo\\KlaviyoTemplate',
+        'campaignApi' => '\\Siro\\Klaviyo\\KlaviyoCampaign',
     ];
 
     public function __construct($apiKey)
