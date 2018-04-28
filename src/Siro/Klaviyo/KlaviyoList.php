@@ -243,7 +243,6 @@ class KlaviyoList extends KlaviyoResponse
         foreach ($emails as $email) {
             array_push($emailsFormat, ['email' => $email]);
         }
-        
         $formParams = [
             'form_params' => [
                 'api_key' => $this->apiKey,
@@ -251,7 +250,7 @@ class KlaviyoList extends KlaviyoResponse
             ]
         ];
 
-        $response = $this->client->delete("/api/v1/list/{$listId}/members", $formParams);
+        $response = $this->client->delete("/api/v1/list/{$listId}/members/batch", $formParams);
         return $this->sendResponseAsObject($response);
     }
 
