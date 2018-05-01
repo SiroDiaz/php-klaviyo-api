@@ -4,6 +4,9 @@ namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
 
+/**
+ *
+ */
 class KlaviyoList extends KlaviyoResponse
 {
     private $apiKey;
@@ -33,9 +36,18 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * List objects represent standard (e.g. not dynamic) lists of people.
+     * With lists, you can send campaigns and manage individual subscriptions.
      * GET /api/v1/lists
+     *
+     * @param mixed $type null or string. Valid options are 'list' or 'segment'
+     * @param int $page For pagination. By default 0 (first result page)
+     * @param int $count For pagination, the number of results to return.
+     *  The maximum number is 100.
+     * @return object null if there is an error or a object with the response based
+     *  in the result expected in the documentation page.
      */
-    public function getLists($type = null, $page = 0, $count = 20)
+    public function getLists($type = null, $page = 0, $count = 50)
     {
         $response = $this->client->get("/api/v1/lists", [
             'query' => [

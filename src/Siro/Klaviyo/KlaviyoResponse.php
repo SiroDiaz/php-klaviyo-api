@@ -12,7 +12,7 @@ class KlaviyoResponse
      *
      * @return object the Klaviyo response.
      */
-    protected function sendResponseAsObject($response)
+    public function sendResponseAsObject($response)
     {
         $statusCode = $response->getStatusCode();
         if ($statusCode === 200) {
