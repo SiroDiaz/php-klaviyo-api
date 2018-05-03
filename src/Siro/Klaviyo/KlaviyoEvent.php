@@ -11,13 +11,6 @@ class KlaviyoEvent extends KlaviyoResponse
 {
     private $apiKey;
     private $client;
-    private static $unsubscribeReasons = [
-        'unsubscribed',
-        'bounced',
-        'invalid_email',
-        'reported_spam',
-        'manually_excluded'
-    ];
 
     public function __construct($apiKey, $client)
     {
