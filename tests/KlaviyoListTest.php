@@ -73,13 +73,30 @@ class KlaviyoListTest extends TestCase
         $this->assertEquals(5, $allLists->total);
     }
 
-    /*
     public function testAddMember()
     {
         $list = $this->klaviyo->list->create('List for get');
-        $this->klaviyo->list->addMember($list->id, 'billelpuertas@outlook.com', ['$first_name' => 'Bill', 'role' => 'client'], true);
-
-        // $this->klaviyo->list->delete($list->id);
+        $member = $this->klaviyo->list->addMember($list->id, 'example@mydomain.com', ['$first_name' => 'Siro', 'role' => 'client'], false);
+        $this->klaviyo->list->delete($list->id);
+        
+        $this->assertEquals(0, $member->list->person_count);
+        $this->assertEquals(false, $member->already_member);
+        $this->assertEquals('example@mydomain.com', $member->person->email);
     }
-    */
+
+    public function testAddMembers()
+    {
+        $list = $this->klaviyo->list->create('List for get');
+        $members = $this->klaviyo->list->addMembers($list->id, [
+            [
+                'email' => 'example@mydomain.com', 'properties' => ['role' => 'client'],
+            ],
+            [
+                'email' => 'jhondoe@mydomain.com'
+            ]
+        ], false);
+        $this->klaviyo->list->delete($list->id);
+
+        $this->assertEquals(2, count($members->people));
+    }
 }
