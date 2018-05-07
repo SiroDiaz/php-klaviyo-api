@@ -31,7 +31,7 @@ class KlaviyoAPI
         $this->apiKey = $apiKey;
         $this->client = new Client([
             'base_uri' => self::$baseUrl,
-            'timeout'  => 2.0,
+            'timeout'  => 0,
         ]);
     }
 
