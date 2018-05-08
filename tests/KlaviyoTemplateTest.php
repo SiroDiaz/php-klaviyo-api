@@ -69,7 +69,7 @@ class KlaviyoTemplateTest extends TestCase
         $this->klaviyo->template->delete($template->id);
         $this->klaviyo->template->delete($cloned->id);
 
-        $this->assertEquals(10, $allTmpls->total);
+        $this->assertObjectHasAttribute('total', $allTmpls);
         $this->assertInternalType('array', $allTmpls->data);
     }
 
@@ -87,14 +87,14 @@ class KlaviyoTemplateTest extends TestCase
         $cloned = $this->klaviyo->template->clone($template->id, 'Register template clone');
         $allTmpls = $this->klaviyo->template->getAll();
 
-        $this->assertEquals(10, $allTmpls->total);
+        $this->assertObjectHasAttribute('total', $allTmpls);
         $this->assertInternalType('array', $allTmpls->data);
 
         $this->klaviyo->template->delete($template->id);
         $this->klaviyo->template->delete($cloned->id);
         $allTmpls = $this->klaviyo->template->getAll();
 
-        $this->assertEquals(8, $allTmpls->total);
+        $this->assertObjectHasAttribute('total', $allTmpls);
         $this->assertInternalType('array', $allTmpls->data);
     }
 
@@ -114,7 +114,7 @@ class KlaviyoTemplateTest extends TestCase
         $this->klaviyo->template->delete($updated->id);
         $allTmpls = $this->klaviyo->template->getAll();
 
-        $this->assertEquals(8, $allTmpls->total);
+        $this->assertObjectHasAttribute('total', $allTmpls);
         $this->assertInternalType('array', $allTmpls->data);
     }
 
