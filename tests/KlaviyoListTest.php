@@ -76,7 +76,11 @@ class KlaviyoListTest extends TestCase
     public function testAddMember()
     {
         $list = $this->klaviyo->list->create('List for get');
-        $member = $this->klaviyo->list->addMember($list->id, 'example@mydomain.com', ['$first_name' => 'Siro', 'role' => 'client'], false);
+        $member = $this->klaviyo->list->addMember(
+            $list->id, 'example@mydomain.com',
+            ['$first_name' => 'Siro', 'role' => 'client'],
+            false
+        );
         $this->klaviyo->list->delete($list->id);
         
         $this->assertEquals(0, $member->list->person_count);

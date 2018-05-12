@@ -62,6 +62,10 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Create a new list. Currently this resources only supports creating standard lists.
+     *
+     * @param string $name
+     * @param string $listType
      * POST /api/v1/lists
      */
     public function create($name, $listType = 'standard')
@@ -79,7 +83,11 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Summary information for the list specified that includes
+     * the name, ID, type, number of members, when it was created and last updated.
+     *
      * GET /api/v1/list/{{ LIST_ID }}
+     * @param string $listId
      */
     public function get($listId)
     {
@@ -93,7 +101,11 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Update details of the list. Currently this only support updating the name of the list.
+     *
      * PUT /api/v1/list/{{ LIST_ID }}
+     * @param string $listId
+     * @param string $name New name.
      */
     public function update($listId, $name)
     {
