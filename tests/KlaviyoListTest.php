@@ -79,11 +79,11 @@ class KlaviyoListTest extends TestCase
         $member = $this->klaviyo->list->addMember(
             $list->id, 'example@mydomain.com',
             ['$first_name' => 'Siro', 'role' => 'client'],
-            false
+            'false'
         );
         $this->klaviyo->list->delete($list->id);
         
-        $this->assertEquals(0, $member->list->person_count);
+        $this->assertEquals(1, $member->list->person_count);
         $this->assertEquals(false, $member->already_member);
         $this->assertEquals('example@mydomain.com', $member->person->email);
     }

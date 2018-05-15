@@ -91,21 +91,27 @@ class KlaviyoList extends KlaviyoResponse
      */
     public function get($listId)
     {
-        $response = $this->client->get("/api/v1/list/{$listId}", [
-            'query' => [
-                'api_key' => $this->apiKey
+        $response = $this->client->get(
+            "/api/v1/list/{$listId}",
+            [
+                'query' => [
+                    'api_key' => $this->apiKey
+                ]
             ]
-        ]);
+        );
 
         return $this->sendResponseAsObject($response);
     }
 
     /**
-     * Update details of the list. Currently this only support updating the name of the list.
+     * Update details of the list. Currently this only support updating the
+     * name of the list.
      *
      * PUT /api/v1/list/{{ LIST_ID }}
-     * @param string $listId
-     * @param string $name New name.
+     * 
+     * @param  string $listId The list ID.
+     * @param  string $name   New name.
+     * @return mixed Null if the request fails or an stdclass object if is successful
      */
     public function update($listId, $name)
     {
@@ -125,11 +131,14 @@ class KlaviyoList extends KlaviyoResponse
      */
     public function delete($listId)
     {
-        $response = $this->client->delete("/api/v1/list/{$listId}", [
-            'query' => [
-                'api_key' => $this->apiKey
+        $response = $this->client->delete(
+            "/api/v1/list/{$listId}",
+            [
+                'query' => [
+                    'api_key' => $this->apiKey
+                ]
             ]
-        ]);
+        );
 
         return $this->sendResponseAsObject($response);
     }
@@ -195,11 +204,10 @@ class KlaviyoList extends KlaviyoResponse
     /**
      * Checks if the email/s are submited in a list or segment
      *
-     * @param string $id
-     * @param mixed $email
-     * @param string $type List or segment
-     *
-     * @return bool True if all emails are inside the list or segment.
+     * @param  string $id    The segment or list ID.
+     * @param  mixed  $email The user email to check if exists.
+     * @param  string $type  List or segment
+     * @return bool   True if all emails are inside the list or segment.
      */
     public function memberExists($id, $email, $type = 'list')
     {
@@ -215,7 +223,7 @@ class KlaviyoList extends KlaviyoResponse
     /**
      * POST /api/v1/list/{{ LIST_ID }}/members
      */
-    public function addMember($listId, $email, array $properties, $confirm = true)
+    public function addMember($listId, $email, array $properties, $confirm = 'true')
     {
         $formParams = [
             'form_params' => [
