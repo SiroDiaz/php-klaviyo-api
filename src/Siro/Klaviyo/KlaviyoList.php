@@ -111,7 +111,7 @@ class KlaviyoList extends KlaviyoResponse
      * 
      * @param  string $listId The list ID.
      * @param  string $name   New name.
-     * @return mixed Null if the request fails or an stdclass object if is successful
+     * @return mixed Null if the request fails or an stdclass object if is successful.
      */
     public function update($listId, $name)
     {
@@ -221,7 +221,18 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Adds a new person to the specified list. If a person with that
+     * email address does not already exist, a new person is first added to Klaviyo.
+     * If someone is unsubscribed from the specified list, they will not be subscribed.
+     * To re-subscribe someone, you must manually remove them from the
+     * unsubscribe list in Klaviyo on the members page for the specified list.
      * POST /api/v1/list/{{ LIST_ID }}/members
+     *
+     * @param string $listId     The id of the id.
+     * @param string $email      The user email to add.
+     * @param array  $properties An array of properties such as names.
+     * @param string $confirm    If true sends an email previous user submission.
+     * @return mixed             Null if the request fails or an stdclass object if is successful
      */
     public function addMember($listId, $email, array $properties, $confirm = 'true')
     {
@@ -241,9 +252,21 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Adds multiple people to the specified list. For each person,
+     * if a person with that email address does not already exist,
+     * a new person is first added to Klaviyo.
+     * If someone is unsubscribed from the specified list, they will not be
+     * subscribed. To re-subscribe someone, you must manually remove them
+     * from the unsubscribe list in Klaviyo on the members page for the
+     * specified list.
      * POST /api/v1/list/{{ LIST_ID }}/members/batch
+     *
+     * @param string $listId  The id of the id.
+     * @param array  $users   An array with properties and email(required)
+     * @param string $confirm if 'true' sends a confirmation email.
+     * @return mixed Null if the request fails or an stdclass object if is successful
      */
-    public function addMembers($listId, array $users, $confirm = true)
+    public function addMembers($listId, array $users, $confirm = 'true')
     {
         if (!count($users)) {
             return false;
@@ -267,7 +290,15 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Batch Removing People from a List
+     * Removes multiple people from the specified list. For each person,
+     * if a person with that email address is a member of that list,
+     * they are removed.
      * DELETE /api/v1/list/{{ LIST_ID }}/members/batch
+     *
+     * @param string $listId The list id.
+     * @param array  $emails The list of user emails to delete.
+     * @return mixed Null if the request fails or an stdclass object if is successful.
      */
     public function deleteMembers($listId, array $emails)
     {
@@ -287,7 +318,23 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Exclude or Unsubscribe Someone from a List
+     * Marks a person as excluded from the specified list.
+     * This has the same effect as unsubscribing someone from a list, except
+     * we keep track of the fact that they did not use the unsubscribe link
+     * in your campaigns or on your list preferences page.
+     * This is equivalent to manually excluding someone on the list members page.
+     * Someone who is excluded will no longer receive campaigns or flow
+     * emails for this list.
+     * Keep in mind, there is currently no API to un-exclude someone.
+     * Re-adding them will not un-exclude them. In order to remove this block,
+     * you must go to the members page for the list and manually change their status.
      * POST /api/v1/list/{{ LIST_ID }}/members/exclude
+     *
+     * @param string  $listId  The list id.
+     * @param string  $email   The user email to unsubscribe.
+     * @param integer The time in seconds. -1 as default value not specified date.
+     * @param mixed   Null if the request fails or an stdclass object if is successful.
      */
     public function unsubscribe($listId, $email, $timestamp = -1)
     {
