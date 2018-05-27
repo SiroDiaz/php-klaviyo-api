@@ -22,7 +22,7 @@ class KlaviyoMetric extends KlaviyoResponse
      * Checks if the string date has a valid format.
      * Format follows this format 'year-month-day'.
      *
-     * @param string $dateStr a date as an string. For example: 2018-01-29.
+     * @param  string $dateStr a date as an string. For example: 2018-01-29.
      * @return boolean true if is a valid date.
      */
     private function isValidDate($dateStr)
@@ -35,13 +35,16 @@ class KlaviyoMetric extends KlaviyoResponse
      */
     public function get($page = 0, $count = 50)
     {
-        $response = $this->client->get('/api/v1/metrics', [
+        $response = $this->client->get(
+            '/api/v1/metrics',
+            [
             'query' => [
                 'api_key' => $this->apiKey,
                 'page'    => $page,
                 'count'   => $count
             ]
-        ]);
+            ]
+        );
         return $this->sendResponseAsObject($response);
     }
 
@@ -105,7 +108,7 @@ class KlaviyoMetric extends KlaviyoResponse
         }
         if (is_null($where) && !is_empty($by)) {
             $data['query']['by'] = urlencode($by);
-        } else if (!is_null($where) && is_array($where) && is_empty($by)) {
+        } elseif (!is_null($where) && is_array($where) && is_empty($by)) {
             $data['query']['where'] = json_encode(array_values($where));
         }
 

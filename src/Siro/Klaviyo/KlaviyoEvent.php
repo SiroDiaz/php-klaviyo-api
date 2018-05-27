@@ -23,11 +23,12 @@ class KlaviyoEvent extends KlaviyoResponse
      * when someone takes an action or does something. It encodes the following data in a dictionary or hash.
      * GET /api/track
      *
-     * @param string $event The event name. For example, 'register'.
-     * @param array $customerProperties An array containing the email (client email).
-     * @param array $properties An array containing all extra data of the client, as
-     *  name, surname, language, city, etc.
-     * @param mixed $timestamp the time in UNIX timestamp format. null by default.
+     * @param string $event              The event name. For example, 'register'.
+     * @param array  $customerProperties An array containing the email (client email).
+     * @param array  $properties         An array containing all extra data of the client, as
+     *                                   name, surname, language, city, etc.
+
+     * @param mixed  $timestamp          the time in UNIX timestamp format. null by default.
      */
     public function track($event, array $customerProperties, array $properties, $timestamp = null)
     {
@@ -39,11 +40,14 @@ class KlaviyoEvent extends KlaviyoResponse
             'time' => $timestamp
         ];
 
-        $response = $this->client->get('/api/track', [
+        $response = $this->client->get(
+            '/api/track',
+            [
             'query' => [
                 'data' => base64_encode(json_encode($data))
             ]
-        ]);
+            ]
+        );
         
         return $this->sendResponseAsObject($response);
     }
@@ -52,11 +56,12 @@ class KlaviyoEvent extends KlaviyoResponse
      * Asynchronous track event version.
      * GET /api/track
      *
-     * @param string $event The event name. For example, 'register'.
-     * @param array $customerProperties An array containing the email (client email).
-     * @param array $properties An array containing all extra data of the client, as
-     *  name, surname, language, city, etc.
-     * @param mixed $timestamp the time in UNIX timestamp format. null by default.
+     * @param string $event              The event name. For example, 'register'.
+     * @param array  $customerProperties An array containing the email (client email).
+     * @param array  $properties         An array containing all extra data of the client, as
+     *                                   name, surname, language, city, etc.
+
+     * @param  mixed  $timestamp          the time in UNIX timestamp format. null by default.
      * @return GuzzleHttp\Promise\PromiseInterface a promise than must be treated.
      */
     public function trackAsync($event, array $customerProperties, array $properties, $timestamp = null)
@@ -69,11 +74,14 @@ class KlaviyoEvent extends KlaviyoResponse
             'time' => $timestamp
         ];
 
-        return $this->client->getAsync('/api/track', [
+        return $this->client->getAsync(
+            '/api/track',
+            [
             'query' => [
                 'data' => base64_encode(json_encode($data))
             ]
-        ]);
+            ]
+        );
     }
 
     /**
@@ -85,7 +93,8 @@ class KlaviyoEvent extends KlaviyoResponse
     public function identify(array $properties)
     {
         if ((!array_key_exists('$email', $properties) || empty($properties['$email']))
-            && (!array_key_exists('$id', $properties) || empty($properties['$id']))) {
+            && (!array_key_exists('$id', $properties) || empty($properties['$id']))
+        ) {
             throw new \Exception('You must identify a user by email or ID.');
         }
         $data = [
@@ -93,11 +102,14 @@ class KlaviyoEvent extends KlaviyoResponse
             'properties' => $properties
         ];
 
-        $response = $this->client->get('/api/indentify', [
+        $response = $this->client->get(
+            '/api/indentify',
+            [
             'query' => [
                 'data' => base64_encode(json_encode($data))
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }
@@ -106,13 +118,14 @@ class KlaviyoEvent extends KlaviyoResponse
      * The Identify API endpoint in a asynchronous version.
      * GET /api/identify.
      *
-     * @param array $properties an array of properties listed in https://www.klaviyo.com/docs/http-api.
+     * @param  array $properties an array of properties listed in https://www.klaviyo.com/docs/http-api.
      * @return GuzzleHttp\Promise\PromiseInterface a promise than must be treated.
      */
     public function identifyAsync(array $properties)
     {
         if ((!array_key_exists('$email', $properties) || empty($properties['$email']))
-            && (!array_key_exists('$id', $properties) || empty($properties['$id']))) {
+            && (!array_key_exists('$id', $properties) || empty($properties['$id']))
+        ) {
             throw new \Exception('You must identify a user by email or ID.');
         }
         $data = [
@@ -120,10 +133,13 @@ class KlaviyoEvent extends KlaviyoResponse
             'properties' => $properties
         ];
 
-        return $this->client->getAsync('/api/indentify', [
+        return $this->client->getAsync(
+            '/api/indentify',
+            [
             'query' => [
                 'data' => base64_encode(json_encode($data))
             ]
-        ]);
+            ]
+        );
     }
 }

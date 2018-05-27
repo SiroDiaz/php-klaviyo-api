@@ -20,13 +20,16 @@ class KlaviyoCampaign extends KlaviyoResponse
      */
     public function getAll($type = null, $page = 0, $count = 50)
     {
-        $response = $this->client->get("/api/v1/campaigns", [
+        $response = $this->client->get(
+            "/api/v1/campaigns",
+            [
             'query' => [
                 'api_key' => $this->apiKey,
                 'page'    => $page,
                 'count'   => $count
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }
@@ -63,11 +66,14 @@ class KlaviyoCampaign extends KlaviyoResponse
      */
     public function get($campaignId)
     {
-        $response = $this->client->get("/api/v1/campaign/{$campaignId}", [
+        $response = $this->client->get(
+            "/api/v1/campaign/{$campaignId}",
+            [
             'query' => [
                 'api_key' => $this->apiKey
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }
@@ -117,11 +123,14 @@ class KlaviyoCampaign extends KlaviyoResponse
      */
     public function sendNow($campaignId)
     {
-        $response = $this->client->post("/api/v1/campaign/{$campaignId}/send", [
+        $response = $this->client->post(
+            "/api/v1/campaign/{$campaignId}/send",
+            [
             'query' => [
                 'api_key' => $this->apiKey
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }

@@ -3,6 +3,7 @@
 namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
+use Exception;
 
 /**
  *
@@ -40,23 +41,27 @@ class KlaviyoList extends KlaviyoResponse
      * With lists, you can send campaigns and manage individual subscriptions.
      * GET /api/v1/lists
      *
-     * @param mixed $type null or string. Valid options are 'list' or 'segment'
-     * @param int $page For pagination. By default 0 (first result page)
-     * @param int $count For pagination, the number of results to return.
-     *  The maximum number is 100.
+     * @param mixed $type  null or string. Valid options are 'list' or 'segment'
+     * @param int   $page  For pagination. By default 0 (first result page)
+     * @param int   $count For pagination, the number of results to return.
+     *                     The maximum number is 100.
+
      * @return object null if there is an error or a object with the response based
      *  in the result expected in the documentation page.
      */
     public function getLists($type = null, $page = 0, $count = 50)
     {
-        $response = $this->client->get("/api/v1/lists", [
+        $response = $this->client->get(
+            "/api/v1/lists",
+            [
             'query' => [
                 'api_key' => $this->apiKey,
                 'type' => $type,
                 'page' => $page,
                 'count' => $count
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }
@@ -87,6 +92,7 @@ class KlaviyoList extends KlaviyoResponse
      * the name, ID, type, number of members, when it was created and last updated.
      *
      * GET /api/v1/list/{{ LIST_ID }}
+     *
      * @param string $listId
      */
     public function get($listId)
@@ -108,7 +114,7 @@ class KlaviyoList extends KlaviyoResponse
      * name of the list.
      *
      * PUT /api/v1/list/{{ LIST_ID }}
-     * 
+     *
      * @param  string $listId The list ID.
      * @param  string $name   New name.
      * @return mixed Null if the request fails or an stdclass object if is successful.
@@ -213,10 +219,10 @@ class KlaviyoList extends KlaviyoResponse
     {
         if ($type === 'list') {
             return $this->memberExistsInList($id, $email);
-        } else if ($type === 'segment') {
+        } elseif ($type === 'segment') {
             return $this->memberExistsInSegment($id, $email);
         } else {
-            throw new \Exception('type not allowed. Only "list" and "segment"');
+            throw new Exception('type not allowed. Only "list" and "segment"');
         }
     }
 
@@ -228,10 +234,10 @@ class KlaviyoList extends KlaviyoResponse
      * unsubscribe list in Klaviyo on the members page for the specified list.
      * POST /api/v1/list/{{ LIST_ID }}/members
      *
-     * @param string $listId     The id of the id.
-     * @param string $email      The user email to add.
-     * @param array  $properties An array of properties such as names.
-     * @param string $confirm    If true sends an email previous user submission.
+     * @param  string $listId     The id of the id.
+     * @param  string $email      The user email to add.
+     * @param  array  $properties An array of properties such as names.
+     * @param  string $confirm    If true sends an email previous user submission.
      * @return mixed             Null if the request fails or an stdclass object if is successful
      */
     public function addMember($listId, $email, array $properties, $confirm = 'true')
@@ -261,9 +267,9 @@ class KlaviyoList extends KlaviyoResponse
      * specified list.
      * POST /api/v1/list/{{ LIST_ID }}/members/batch
      *
-     * @param string $listId  The id of the id.
-     * @param array  $users   An array with properties and email(required)
-     * @param string $confirm if 'true' sends a confirmation email.
+     * @param  string $listId  The id of the id.
+     * @param  array  $users   An array with properties and email(required)
+     * @param  string $confirm if 'true' sends a confirmation email.
      * @return mixed Null if the request fails or an stdclass object if is successful
      */
     public function addMembers($listId, array $users, $confirm = 'true')
@@ -274,7 +280,7 @@ class KlaviyoList extends KlaviyoResponse
 
         foreach ($users as $user) {
             if (!array_key_exists('email', $user)) {
-                throw new \Exception('"email" key not found');
+                throw new Exception('"email" key not found');
             }
         }
 
@@ -296,8 +302,8 @@ class KlaviyoList extends KlaviyoResponse
      * they are removed.
      * DELETE /api/v1/list/{{ LIST_ID }}/members/batch
      *
-     * @param string $listId The list id.
-     * @param array  $emails The list of user emails to delete.
+     * @param  string $listId The list id.
+     * @param  array  $emails The list of user emails to delete.
      * @return mixed Null if the request fails or an stdclass object if is successful.
      */
     public function deleteMembers($listId, array $emails)
@@ -331,10 +337,10 @@ class KlaviyoList extends KlaviyoResponse
      * you must go to the members page for the list and manually change their status.
      * POST /api/v1/list/{{ LIST_ID }}/members/exclude
      *
-     * @param string  $listId  The list id.
-     * @param string  $email   The user email to unsubscribe.
-     * @param integer The time in seconds. -1 as default value not specified date.
-     * @param mixed   Null if the request fails or an stdclass object if is successful.
+     * @param  string  $listId    The list id.
+     * @param  string  $email     The user email to unsubscribe.
+     * @param  integer $timestamp The time in seconds. -1 as default value not specified date.
+     * @return mixed   Null if the request fails or an stdclass object if is successful.
      */
     public function unsubscribe($listId, $email, $timestamp = -1)
     {
@@ -357,12 +363,24 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * Get all the exclusions for the specified list.
+     * This will include the person's email, the reason they
+     * were excluded and the time they were excluded.
      * GET /api/v1/list/{{ LIST_ID }}/exclusions
+     *
+     * @param  string  $listId The list id
+     * @param  string  $reason The possible values are unsubscribed, bounced,
+     *                         invalid_email,reported_spam and manually_excluded.
+     * @param  string  $sort   The possible values are asc or desc.
+     * @param  integer $page   The page number. Defaults to 0.
+     * @param  integer $count  The count per page.
+     * @return mixed   Null if the request fails or an stdclass object if
+     *                 is successful.
      */
     public function getListExclusions($listId, $reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
     {
         if (!$this->isValidUnsubscribeReason($reason)) {
-            throw new \Exception('Invalid unsubscribe reason');
+            throw new Exception('Invalid unsubscribe reason');
         }
         
         $options = [
@@ -380,12 +398,24 @@ class KlaviyoList extends KlaviyoResponse
     }
 
     /**
+     * List Exclusions or Unsubscribes
+     * Get global exclusions or unsubscribes. Global exclusions are distinct from list
+     * exclusions in that these email addresses will not receive any emails from any list.
+     * Typically, when someone unsubscribes from a campaign, they are only unsubscribed
+     * from that list and are not globally unsubscribed.
      * GET /api/v1/people/exclusions
+     *
+     * @param  string  $reason
+     * @param  string  $sort
+     * @param  integer $page
+     * @param  integer $count
+     * @return mixed  Null if the request fails or an stdclass object if
+     *                is successful.
      */
     public function getExclusions($reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
     {
         if (!$this->isValidUnsubscribeReason($reason)) {
-            throw new \Exception('Invalid unsubscribe reason');
+            throw new Exception('Invalid unsubscribe reason');
         }
         
         $options = [

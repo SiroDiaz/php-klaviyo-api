@@ -23,11 +23,14 @@ class KlaviyoProfile extends KlaviyoResponse
      */
     public function get($personId)
     {
-        $response = $this->client->get("/api/v1/person/{$personId}", [
+        $response = $this->client->get(
+            "/api/v1/person/{$personId}",
+            [
             'query' => [
                 'api_key' => $this->apiKey
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }

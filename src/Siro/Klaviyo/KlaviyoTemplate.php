@@ -20,11 +20,14 @@ class KlaviyoTemplate extends KlaviyoResponse
      */
     public function getAll()
     {
-        $response = $this->client->get('/api/v1/email-templates', [
+        $response = $this->client->get(
+            '/api/v1/email-templates',
+            [
             'query' => [
                 'api_key' => $this->apiKey
             ]
-        ]);
+            ]
+        );
 
         return $this->sendResponseAsObject($response);
     }
