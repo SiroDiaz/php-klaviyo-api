@@ -12,7 +12,53 @@ current last version run:
 `composer require siro/php-klaviyo-api:"1.0.1"`
 
 ## Usage
-The usage guide is under development.
+
+### API organization
+
+The php-klaviyo-api is organized as the official Klaviyo API, really.
+If you want to access to event API you must do as follow:
+
+```php
+// klaviyo Event API
+$klaviyo->event->track($event, $customerProperties, $properties);
+$klaviyo->event->trackAsync($event, $customerProperties, $properties);
+
+// email template API
+$klaviyo->template->getAll();
+$klaviyo->template->create('newuser', $htmlString);
+
+// lists API
+$klaviyo->list->getLists();
+$klaviyo->list->create('premium');
+```
+
+A real example would be as i show here:
+
+```php
+<?php
+
+use Siro\Klaviyo\KlaviyoAPI;
+
+$klaviyo = new KlaviyoAPI();
+$klaviyo->event->asyncTrack(
+    'register', [
+        'email' => 'federico@gmail.com'
+    ], []
+);
+
+```
+
+As you can see it is really easy. The code is good organized, with the same
+documentation that the official one. You just need to read a bit and you will see that it is simple and intuitive.
+
+### Klaviyo Event API
+
+This API is used to track events to Klaviyo. This is the main feature
+and you maybe would use it. By that reason i implemented this API wrapper
+in this way.
+For load it 
+
+
 
 ## Contributing
 This project uses **PSR-4** coding standard. If you want to make a contribution it must be important run `make sniff` for checking
