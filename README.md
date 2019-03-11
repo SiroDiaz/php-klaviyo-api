@@ -1,6 +1,7 @@
 # php-klaviyo-api
 
 [![Build Status](https://travis-ci.org/SiroDiaz/php-klaviyo-api.svg?branch=dev)](https://travis-ci.org/SiroDiaz/php-klaviyo-api)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3XKLA6VTYVSKW&source=url)
 
 Klaviyo API wrapper for PHP. It allows to consume the Klaviyo v1 API using a clear and simple
 PHP class format for make the usage user-friendly. Stuff like delete a list is as logic as doing:
@@ -56,7 +57,7 @@ documentation that the official one. You just need to read a bit and you will se
 This API is used to track events to Klaviyo. This is the main feature
 and you maybe would use it. By that reason i implemented this API wrapper
 in this way.
-For load it 
+For load it
 
 
 
