@@ -7,28 +7,21 @@ use GuzzleHttp\Client;
 /**
  * https://www.klaviyo.com/docs/http-api
  */
-class KlaviyoEvent extends KlaviyoResponse
+class KlaviyoEvent extends ApiBase
 {
-    private $apiKey;
-    private $client;
-
-    public function __construct($apiKey, $client)
-    {
-        $this->apiKey = $apiKey;
-        $this->client = $client;
-    }
+    use KlaviyoResponse;
 
     /**
      * The main Events API endpoint is /api/track, which is used to track
      * when someone takes an action or does something. It encodes the following data in a dictionary or hash.
      * GET /api/track
      *
-     * @param string $event              The event name. For example, 'register'.
-     * @param array  $customerProperties An array containing the email (client email).
-     * @param array  $properties         An array containing all extra data of the client, as
+     * @param string $event The event name. For example, 'register'.
+     * @param array $customerProperties An array containing the email (client email).
+     * @param array $properties An array containing all extra data of the client, as
      *                                   name, surname, language, city, etc.
-
-     * @param mixed  $timestamp          the time in UNIX timestamp format. null by default.
+     * @param mixed $timestamp the time in UNIX timestamp format. null by default.
+     * @return object
      */
     public function track($event, array $customerProperties, array $properties, $timestamp = null)
     {
@@ -89,6 +82,10 @@ class KlaviyoEvent extends KlaviyoResponse
      * about an individual without tracking an associated event.
      * It encodes the following data in a dictionary or hash.
      * GET /api/identify
+     *
+     * @param array $properties
+     * @return object
+     * @throws \Exception
      */
     public function identify(array $properties)
     {
@@ -120,6 +117,7 @@ class KlaviyoEvent extends KlaviyoResponse
      *
      * @param  array $properties an array of properties listed in https://www.klaviyo.com/docs/http-api.
      * @return GuzzleHttp\Promise\PromiseInterface a promise than must be treated.
+     * @throws \Exception
      */
     public function identifyAsync(array $properties)
     {

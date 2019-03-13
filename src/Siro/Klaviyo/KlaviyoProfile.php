@@ -7,16 +7,9 @@ use GuzzleHttp\Client;
 /**
  * https://www.klaviyo.com/docs/http-api
  */
-class KlaviyoProfile extends KlaviyoResponse
+class KlaviyoProfile extends ApiBase
 {
-    private $apiKey;
-    private $client;
-
-    public function __construct($apiKey, $client)
-    {
-        $this->apiKey = $apiKey;
-        $this->client = $client;
-    }
+    use KlaviyoResponse;
 
     /**
      * GET /api/v1/person/{{ PERSON_ID }}

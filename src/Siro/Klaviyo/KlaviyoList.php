@@ -8,10 +8,10 @@ use Exception;
 /**
  *
  */
-class KlaviyoList extends KlaviyoResponse
+class KlaviyoList extends ApiBase
 {
-    private $apiKey;
-    private $client;
+    use KlaviyoResponse;
+
     private static $unsubscribeReasons = [
         'unsubscribed',
         'bounced',
@@ -20,16 +20,11 @@ class KlaviyoList extends KlaviyoResponse
         'manually_excluded'
     ];
 
-    public function __construct($apiKey, $client)
-    {
-        $this->apiKey = $apiKey;
-        $this->client = $client;
-    }
-
     /**
      * Checks if the reason provided is valid.
      *
      * @param string $reason The type of reason
+     * @return bool
      */
     private function isValidUnsubscribeReason($reason)
     {

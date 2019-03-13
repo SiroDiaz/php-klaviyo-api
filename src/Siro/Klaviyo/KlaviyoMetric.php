@@ -7,16 +7,9 @@ use GuzzleHttp\Client;
 /**
  * https://www.klaviyo.com/docs/api/metrics
  */
-class KlaviyoMetric extends KlaviyoResponse
+class KlaviyoMetric extends ApiBase
 {
-    private $apiKey;
-    private $client;
-
-    public function __construct($apiKey, $client)
-    {
-        $this->apiKey = $apiKey;
-        $this->client = $client;
-    }
+    use KlaviyoResponse;
 
     /**
      * Checks if the string date has a valid format.

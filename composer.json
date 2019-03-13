@@ -1,8 +1,19 @@
 {
     "name": "siro/php-klaviyo-api",
-    "description": "Klaviyo API wrapper for PHP",
+    "description": "Low level but elegant Klaviyo full API wrapper for PHP with asynchronous track event support",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "laravel",
+        "klaviyo",
+        "api",
+        "event tracker",
+        "event",
+        "event tracking",
+        "ecommerce",
+        "event",
+        "analytics"
+    ],
     "authors": [
         {
             "name": "Siro Diaz",
@@ -15,7 +26,8 @@
         }
     },
     "require": {
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "ext-json": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*",

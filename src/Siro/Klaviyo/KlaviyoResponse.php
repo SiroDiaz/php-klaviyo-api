@@ -4,7 +4,7 @@ namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
 
-class KlaviyoResponse
+trait KlaviyoResponse
 {
     /**
      * Sends the response object if 200 status code is retrieved.

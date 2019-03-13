@@ -4,16 +4,9 @@ namespace Siro\Klaviyo;
 
 use GuzzleHttp\Client;
 
-class KlaviyoCampaign extends KlaviyoResponse
+class KlaviyoCampaign extends ApiBase
 {
-    private $apiKey;
-    private $client;
-    
-    public function __construct($apiKey, $client)
-    {
-        $this->apiKey = $apiKey;
-        $this->client = $client;
-    }
+    use KlaviyoResponse;
 
     /**
      * GET /api/v1/campaigns
