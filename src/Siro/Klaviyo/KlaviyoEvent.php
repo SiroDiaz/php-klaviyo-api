@@ -16,11 +16,12 @@ class KlaviyoEvent extends ApiBase
      * when someone takes an action or does something. It encodes the following data in a dictionary or hash.
      * GET /api/track
      *
-     * @param string $event The event name. For example, 'register'.
-     * @param array $customerProperties An array containing the email (client email).
-     * @param array $properties An array containing all extra data of the client, as
+     * @param string $event              The event name. For example, 'register'.
+     * @param array  $customerProperties An array containing the email (client email).
+     * @param array  $properties         An array containing all extra data of the client, as
      *                                   name, surname, language, city, etc.
-     * @param mixed $timestamp the time in UNIX timestamp format. null by default.
+
+     * @param  mixed  $timestamp          the time in UNIX timestamp format. null by default.
      * @return object
      */
     public function track($event, array $customerProperties, array $properties, $timestamp = null)
@@ -83,7 +84,7 @@ class KlaviyoEvent extends ApiBase
      * It encodes the following data in a dictionary or hash.
      * GET /api/identify
      *
-     * @param array $properties
+     * @param  array $properties
      * @return object
      * @throws \Exception
      */

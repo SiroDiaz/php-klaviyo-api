@@ -4,49 +4,58 @@ namespace Siro\Klaviyo;
 
 use Exception;
 use GuzzleHttp\Client;
+use Siro\Klaviyo\Exceptions\ApiNotFoundException;
 
 class KlaviyoAPI
 {
+    /**
+     * @var
+     */
     private $apiKey;
-    private $client;
-    private $eventApi = null;
-    private $listApi = null;
-    private $profileApi = null;
-    private $metricApi = null;
-    private $templateApi = null;
-    private $campaignApi = null;
-    public static $baseUrl = 'https://a.klaviyo.com';
 
-    private $apiClasses = [
-        'eventApi'    => '\\Siro\\Klaviyo\\KlaviyoEvent',
-        'listApi'     => '\\Siro\\Klaviyo\\KlaviyoList',
-        'profileApi'  => '\\Siro\\Klaviyo\\KlaviyoProfile',
-        'metricApi'   => '\\Siro\\Klaviyo\\KlaviyoMetric',
-        'templateApi' => '\\Siro\\Klaviyo\\KlaviyoTemplate',
-        'campaignApi' => '\\Siro\\Klaviyo\\KlaviyoCampaign',
+    /**
+     * @var
+     */
+    private $client;
+    const baseUrl = 'https://a.klaviyo.com';
+    const apiBaseName = '\\Siro\\Klaviyo\\Klaviyo';
+
+    /**
+     * @var
+     */
+    private $apisAvailables = [
+        'event',
+        'list',
+        'profile',
+        'metric',
+        'template',
+        'campaign'
     ];
 
     public function __construct($apiKey)
     {
         $this->apiKey = $apiKey;
-        $this->client = new Client([
-            'base_uri' => self::$baseUrl,
+        $this->client = new Client(
+            [
+            'base_uri' => KlaviyoAPI::baseUrl,
             'timeout'  => 0,
-        ]);
+            ]
+        );
     }
 
     public function __get($api)
     {
-        $apiType = $api .'Api';
-        if (property_exists($this, $apiType)) {
-            if ($this->$apiType !== null) {
-                return $this->$apiType;
-            }
-
-            $this->$apiType = new $this->apiClasses[$apiType]($this->apiKey, $this->client);
-            return $this->$apiType;
+        if (property_exists($this, $api)) {
+            return $this->$api;
         }
-        // throw exception
-        throw new Exception("$api api is not defined");
+
+        if (!in_array($api, $this->apisAvailables)) {
+            $message = 'Avaiable APIs: '. implode(', ', $this->$apisAvailables);
+            throw new ApiNotFoundException($message);
+        }
+
+        $apiClass = KlaviyoAPI::apiBaseName . ucfirst($api);
+        $this->$api = new $apiClass($this->apiKey, $this->client);
+        return $this->$api;
     }
 }

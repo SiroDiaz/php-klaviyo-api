@@ -23,7 +23,7 @@ class KlaviyoList extends ApiBase
     /**
      * Checks if the reason provided is valid.
      *
-     * @param string $reason The type of reason
+     * @param  string $reason The type of reason
      * @return bool
      */
     private function isValidUnsubscribeReason($reason)
