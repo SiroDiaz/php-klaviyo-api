@@ -2,11 +2,10 @@
 
 namespace Siro\Klaviyo;
 
-use GuzzleHttp\Client;
 use Exception;
 
 /**
- *
+ * https://www.klaviyo.com/docs/api/lists
  */
 class KlaviyoList extends ApiBase
 {

@@ -2,8 +2,6 @@
 
 namespace Siro\Klaviyo;
 
-use GuzzleHttp\Client;
-
 /**
  * https://www.klaviyo.com/docs/http-api
  */

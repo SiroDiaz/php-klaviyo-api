@@ -50,13 +50,12 @@ class KlaviyoEvent extends ApiBase
      * Asynchronous track event version.
      * GET /api/track
      *
-     * @param string $event              The event name. For example, 'register'.
-     * @param array  $customerProperties An array containing the email (client email).
-     * @param array  $properties         An array containing all extra data of the client, as
+     * @param string $event The event name. For example, 'register'.
+     * @param array $customerProperties An array containing the email (client email).
+     * @param array $properties An array containing all extra data of the client, as
      *                                   name, surname, language, city, etc.
-
-     * @param  mixed  $timestamp          the time in UNIX timestamp format. null by default.
-     * @return GuzzleHttp\Promise\PromiseInterface a promise than must be treated.
+     * @param  mixed $timestamp the time in UNIX timestamp format. null by default.
+     * @return \GuzzleHttp\Promise\PromiseInterface a promise than must be treated.
      */
     public function trackAsync($event, array $customerProperties, array $properties, $timestamp = null)
     {
