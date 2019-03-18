@@ -43,6 +43,11 @@ class KlaviyoAPI
         );
     }
 
+    /**
+     * @param $api
+     * @return mixed
+     * @throws ApiNotFoundException
+     */
     public function __get($api)
     {
         if (property_exists($this, $api)) {
