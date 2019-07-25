@@ -183,6 +183,7 @@ class KlaviyoCampaign extends ApiBase
     {
         $options = [
             'query' => [
+                'count' => $count,
                 'api_key' => $this->apiKey,
                 'sort'    => $sort,
             ]
