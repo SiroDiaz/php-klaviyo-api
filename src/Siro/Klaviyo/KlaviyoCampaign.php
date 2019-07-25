@@ -190,7 +190,7 @@ class KlaviyoCampaign extends ApiBase
         if (!empty($offset)) {
             $options['query']['offset'] = $offset;
         }
-        $response = $this->client->get("/api/v1/campaign/{$campaignId}/send", $options);
+        $response = $this->client->get("/api/v1/campaign/{$campaignId}/recipients", $options);
 
         return $this->sendResponseAsObject($response);
     }
