@@ -44,7 +44,7 @@ class KlaviyoMetric extends ApiBase
     /**
      * GET /api/v1/metrics/timeline
      */
-    public function getAllTimeline($since = null, $count = 100, $sort = 'desc')
+    public function getAllTimeline($page = 0, $since = null, $count = 100, $sort = 'desc')
     {
         $data = [
             'query' => [
