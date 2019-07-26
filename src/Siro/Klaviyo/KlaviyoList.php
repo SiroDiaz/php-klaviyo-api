@@ -2,6 +2,7 @@
 
 namespace Siro\Klaviyo;
 
+use GuzzleHttp\RequestOptions;
 use Exception;
 
 /**
@@ -33,27 +34,19 @@ class KlaviyoList extends ApiBase
     /**
      * List objects represent standard (e.g. not dynamic) lists of people.
      * With lists, you can send campaigns and manage individual subscriptions.
-     * GET /api/v1/lists
+     * GET /api/v2/lists
      *
-     * @param mixed $type  null or string. Valid options are 'list' or 'segment'
-     * @param int   $page  For pagination. By default 0 (first result page)
-     * @param int   $count For pagination, the number of results to return.
-     *                     The maximum number is 100.
-
      * @return object null if there is an error or a object with the response based
      *  in the result expected in the documentation page.
      */
-    public function getLists($type = null, $page = 0, $count = 50)
+    public function getLists()
     {
         $response = $this->client->get(
-            "/api/v1/lists",
+            "/api/v2/lists",
             [
-            'query' => [
-                'api_key' => $this->apiKey,
-                'type' => $type,
-                'page' => $page,
-                'count' => $count
-            ]
+                'form_params' => [
+                    'api_key' => $this->apiKey,
+                ]
             ]
         );
 
@@ -64,20 +57,18 @@ class KlaviyoList extends ApiBase
      * Create a new list. Currently this resources only supports creating standard lists.
      *
      * @param string $name
-     * @param string $listType
-     * POST /api/v1/lists
+     * POST /api/v2/lists
      */
-    public function create($name, $listType = 'standard')
+    public function create($name)
     {
         $requestParams = [
             'form_params' => [
                 'api_key' => $this->apiKey,
-                'name' => $name,
-                'list_type' => $listType,
+                'list_name' => $name,
             ]
         ];
-        $response = $this->client->post("/api/v1/lists", $requestParams);
-        
+        $response = $this->client->post("/api/v2/lists", $requestParams);
+
         return $this->sendResponseAsObject($response);
     }
 
@@ -85,14 +76,14 @@ class KlaviyoList extends ApiBase
      * Summary information for the list specified that includes
      * the name, ID, type, number of members, when it was created and last updated.
      *
-     * GET /api/v1/list/{{ LIST_ID }}
+     * GET /api/v2/list/{{ LIST_ID }}
      *
      * @param string $listId
      */
     public function get($listId)
     {
         $response = $this->client->get(
-            "/api/v1/list/{$listId}",
+            "/api/v2/list/{$listId}",
             [
                 'query' => [
                     'api_key' => $this->apiKey
@@ -107,7 +98,7 @@ class KlaviyoList extends ApiBase
      * Update details of the list. Currently this only support updating the
      * name of the list.
      *
-     * PUT /api/v1/list/{{ LIST_ID }}
+     * PUT /api/v2/list/{{ LIST_ID }}
      *
      * @param  string $listId The list ID.
      * @param  string $name   New name.
@@ -118,21 +109,21 @@ class KlaviyoList extends ApiBase
         $requestParams = [
             'form_params' => [
                 'api_key' => $this->apiKey,
-                'name' => $name
+                'list_name' => $name
             ]
         ];
-        $response = $this->client->put("/api/v1/list/{$listId}", $requestParams);
-        
+        $response = $this->client->put("/api/v2/list/{$listId}", $requestParams);
+
         return $this->sendResponseAsObject($response);
     }
 
     /**
-     * PUT /api/v1/list/{{ LIST_ID }}
+     * PUT /api/v2/list/{{ LIST_ID }}
      */
     public function delete($listId)
     {
         $response = $this->client->delete(
-            "/api/v1/list/{$listId}",
+            "/api/v2/list/{$listId}",
             [
                 'query' => [
                     'api_key' => $this->apiKey
@@ -148,28 +139,22 @@ class KlaviyoList extends ApiBase
      */
     public function memberExistsInList($listId, $email)
     {
-        $emailFormat = $email;
-        if (is_array($email)) {
-            $emailFormat = implode(',', $email);
+        $emails = $email;
+        if (!is_array($email)) {
+            $emails = [$email];
         }
         $options = [
-            'query' => [
+            'form_params' => [
                 'api_key' => $this->apiKey,
-                'email'   => $emailFormat
+                'emails'   => $emails
             ]
         ];
-        $response = $this->client->get("/api/v1/list/{$listId}/members", $options);
+        $response = $this->client->get("/api/v2/list/{$listId}/members", [
+          RequestOptions::JSON => $options['form_params'],
+          $options
+        ]);
 
-        if ($response->getStatusCode() === 200) {
-            $resObj = json_decode((string) $response->getBody());
-            if (is_array($email)) {
-                return $resObj->total === count($email);
-            }
-            
-            return (bool) $resObj->total;
-        }
-
-        return null;
+        return count($this->sendResponseAsObject($response)) === count($emails);
     }
 
     /**
@@ -187,14 +172,14 @@ class KlaviyoList extends ApiBase
                 'email'   => $emailFormat
             ]
         ];
-        $response = $this->client->get("/api/v1/segment/{$segmentId}/members", $options);
+        $response = $this->client->get("/api/v2/segment/{$segmentId}/members", $options);
 
         if ($response->getStatusCode() === 200) {
             $resObj = json_decode((string) $response->getBody());
             if (is_array($email)) {
                 return $resObj->total === count($email);
             }
-            
+
             return (bool) $resObj->total;
         }
 
@@ -226,66 +211,30 @@ class KlaviyoList extends ApiBase
      * If someone is unsubscribed from the specified list, they will not be subscribed.
      * To re-subscribe someone, you must manually remove them from the
      * unsubscribe list in Klaviyo on the members page for the specified list.
-     * POST /api/v1/list/{{ LIST_ID }}/members
+     * POST /api/v2/list/{{ LIST_ID }}/members
      *
      * @param  string $listId     The id of the id.
-     * @param  string $email      The user email to add.
-     * @param  array  $properties An array of properties such as names.
-     * @param  string $confirm    If true sends an email previous user submission.
+     * @param  array  $profiles An array of properties such as names.
      * @return mixed             Null if the request fails or an stdclass object if is successful
      */
-    public function addMember($listId, $email, array $properties, $confirm = 'true')
+    public function addMember($listId, array $profiles)
     {
-        $formParams = [
-            'form_params' => [
-                'api_key' => $this->apiKey,
-                'email' => $email,
-                'confirm_optin' => $confirm,
-            ]
-        ];
-
-        if (count($properties) > 0) {
-            $formParams['form_params']['properties'] = json_encode($properties);
-        }
-        $response = $this->client->post("/api/v1/list/{$listId}/members", $formParams);
-        return $this->sendResponseAsObject($response);
-    }
-
-    /**
-     * Adds multiple people to the specified list. For each person,
-     * if a person with that email address does not already exist,
-     * a new person is first added to Klaviyo.
-     * If someone is unsubscribed from the specified list, they will not be
-     * subscribed. To re-subscribe someone, you must manually remove them
-     * from the unsubscribe list in Klaviyo on the members page for the
-     * specified list.
-     * POST /api/v1/list/{{ LIST_ID }}/members/batch
-     *
-     * @param  string $listId  The id of the id.
-     * @param  array  $users   An array with properties and email(required)
-     * @param  string $confirm if 'true' sends a confirmation email.
-     * @return mixed Null if the request fails or an stdclass object if is successful
-     */
-    public function addMembers($listId, array $users, $confirm = 'true')
-    {
-        if (!count($users)) {
-            return false;
-        }
-
-        foreach ($users as $user) {
-            if (!array_key_exists('email', $user)) {
+        foreach ($profiles as $profile) {
+            if (!array_key_exists('email', $profile)) {
                 throw new Exception('"email" key not found');
             }
         }
-
         $formParams = [
             'form_params' => [
                 'api_key' => $this->apiKey,
-                'batch' => json_encode($users),
-                'confirm_optin' => $confirm,
-            ]
+                'profiles' => $profiles
+            ],
         ];
-        $response = $this->client->post("/api/v1/list/{$listId}/members/batch", $formParams);
+
+        $response = $this->client->post("/api/v2/list/{$listId}/members", [
+          RequestOptions::JSON => $formParams['form_params'],
+          $formParams
+        ]);
         return $this->sendResponseAsObject($response);
     }
 
@@ -294,7 +243,7 @@ class KlaviyoList extends ApiBase
      * Removes multiple people from the specified list. For each person,
      * if a person with that email address is a member of that list,
      * they are removed.
-     * DELETE /api/v1/list/{{ LIST_ID }}/members/batch
+     * DELETE /api/v2/list/{{ LIST_ID }}/members/batch
      *
      * @param  string $listId The list id.
      * @param  array  $emails The list of user emails to delete.
@@ -302,18 +251,17 @@ class KlaviyoList extends ApiBase
      */
     public function deleteMembers($listId, array $emails)
     {
-        $emailsFormat = [];
-        foreach ($emails as $email) {
-            array_push($emailsFormat, ['email' => $email]);
-        }
-        $formParams = [
+        $options = [
             'form_params' => [
                 'api_key' => $this->apiKey,
-                'batch'   => json_encode($emailsFormat)
+                'emails'   => $emails
             ]
         ];
+        $response = $this->client->delete("/api/v2/list/{$listId}/members", [
+          RequestOptions::JSON => $options['form_params'],
+          $options
+        ]);
 
-        $response = $this->client->delete("/api/v1/list/{$listId}/members/batch", $formParams);
         return $this->sendResponseAsObject($response);
     }
 
@@ -376,7 +324,7 @@ class KlaviyoList extends ApiBase
         if (!$this->isValidUnsubscribeReason($reason)) {
             throw new Exception('Invalid unsubscribe reason');
         }
-        
+
         $options = [
             'query' => [
                 'api_key' => $this->apiKey,
@@ -411,7 +359,7 @@ class KlaviyoList extends ApiBase
         if (!$this->isValidUnsubscribeReason($reason)) {
             throw new Exception('Invalid unsubscribe reason');
         }
-        
+
         $options = [
             'query' => [
                 'api_key' => $this->apiKey,
