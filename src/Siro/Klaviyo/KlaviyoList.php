@@ -396,4 +396,26 @@ class KlaviyoList extends ApiBase
         );
         return $this->sendResponseAsObject($response);
     }
+
+    /**
+     * GET /api/v2/group/{LIST_ID or SEGMENT_ID}/members/all
+     */
+    public function getListMembers($listId, $marker = null)
+    {
+        $formParams = [
+            'form_params' => [
+                'api_key' => $this->apiKey
+            ]
+        ];
+
+        if ($marker) {
+            $formParams['form_params']['marker'] = $marker;
+        }
+
+        $response = $this->client->get(
+            "/api/v2/group/{$listId}/members/all",
+            $formParams
+        );
+        return $this->sendResponseAsObject($response);
+    }
 }
