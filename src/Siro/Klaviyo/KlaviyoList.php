@@ -135,7 +135,7 @@ class KlaviyoList extends ApiBase
     }
 
     /**
-     * GET /api/v1/list/{{ LIST_ID }}/members
+     * GET /api/v2/list/{$listId}/members
      */
     public function memberExistsInList($listId, $email)
     {
@@ -285,7 +285,7 @@ class KlaviyoList extends ApiBase
             RequestOptions::JSON => $options['form_params'],
             $options
         ]);
-        
+
         return $this->sendResponseAsObject($response);
     }
 
@@ -337,95 +337,33 @@ class KlaviyoList extends ApiBase
     }
 
     /**
-     * Get all the exclusions for the specified list.
-     * This will include the person's email, the reason they
-     * were excluded and the time they were excluded.
-     * GET /api/v1/list/{{ LIST_ID }}/exclusions
+     * Get all of the emails that have been excluded from a list along
+     * with the exclusion reason and exclusion time.
+     * This endpoint uses batching to return the records, so for a large list
+     * multiple calls will need to be made to get all of the records.
      *
-     * @param  string  $listId The list id
-     * @param  string  $reason The possible values are unsubscribed, bounced,
-     *                         invalid_email,reported_spam and manually_excluded.
-     * @param  string  $sort   The possible values are asc or desc.
-     * @param  integer $page   The page number. Defaults to 0.
-     * @param  integer $count  The count per page.
-     * @return mixed   Null if the request fails or an stdclass object if
-     *                 is successful.
+     * GET https://a.klaviyo.com/api/v2/list/{LIST_ID}/exclusions/all
      */
-    public function getListExclusions($listId, $reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
+    public function getAllExclusions($listId, $marker = null)
     {
-        if (!$this->isValidUnsubscribeReason($reason)) {
-            throw new Exception('Invalid unsubscribe reason');
-        }
-
         $options = [
-            'query' => [
-                'api_key' => $this->apiKey,
-                'reason'  => $reason,
-                'sort'    => $sort,
-                'page'    => $page,
-                'count'   => $count
-            ]
-        ];
-        $response = $this->client->get("/api/v1/list/{$listId}/exclusions", $options);
-
-        return $this->sendResponseAsObject($response);
-    }
-
-    /**
-     * List Exclusions or Unsubscribes
-     * Get global exclusions or unsubscribes. Global exclusions are distinct from list
-     * exclusions in that these email addresses will not receive any emails from any list.
-     * Typically, when someone unsubscribes from a campaign, they are only unsubscribed
-     * from that list and are not globally unsubscribed.
-     * GET /api/v1/people/exclusions
-     *
-     * @param  string  $reason
-     * @param  string  $sort
-     * @param  integer $page
-     * @param  integer $count
-     * @return mixed  Null if the request fails or an stdclass object if
-     *                is successful.
-     */
-    public function getExclusions($reason = 'unsubscribed', $sort = 'asc', $page = 0, $count = 100)
-    {
-        if (!$this->isValidUnsubscribeReason($reason)) {
-            throw new Exception('Invalid unsubscribe reason');
-        }
-
-        $options = [
-            'query' => [
-                'api_key' => $this->apiKey,
-                'reason'  => $reason,
-                'sort'    => $sort,
-                'page'    => $page,
-                'count'   => $count
-            ]
-        ];
-        $response = $this->client->get("/api/v1/people/exclusions", $options);
-
-        return $this->sendResponseAsObject($response);
-    }
-
-    /**
-     * POST /api/v1/people/exclusions
-     */
-    public function excludeFromAll($email, $timestamp = -1)
-    {
-        $formParams = [
             'form_params' => [
-                'api_key' => $this->apiKey,
-                'email'   => $email
+                'api_key' => $this->apiKey
             ]
         ];
 
-        if ($timestamp !== -1) {
-            $formParams['form_params']['timestamp'] = $timestamp;
+        if (!is_null($marker)) {
+            $options['form_params']['marker'] = (int) $marker;
         }
 
-        $response = $this->client->post(
-            "/api/v1/list/{$listId}/people/exclusions",
-            $formParams
+        $response = $this->client->get(
+            "/api/v2/list/{$listId}/exclusions/all",
+            [
+                RequestOptions::JSON => $options['form_params'],
+                $options
+            ]
         );
+
         return $this->sendResponseAsObject($response);
     }
 
