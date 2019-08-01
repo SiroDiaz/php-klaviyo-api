@@ -70,5 +70,10 @@ At this moment it is prioritary making tests for the API so Pull requests for te
 ## Credits
 All credits, at this moment, are for Siro Díaz Palazón <sirodiaz93@gmail.com>.
 
+## Contributors
+At this moment main contributors are:
+ - Siro Díaz Palazón [SiroDiaz](https://github.com/SiroDiaz)
+ - Lukasz [Blysq](https://github.com/Blysq)
+
 ## License
 This project is licensed under MIT.

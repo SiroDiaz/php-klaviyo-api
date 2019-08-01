@@ -266,41 +266,73 @@ class KlaviyoList extends ApiBase
     }
 
     /**
-     * Exclude or Unsubscribe Someone from a List
-     * Marks a person as excluded from the specified list.
-     * This has the same effect as unsubscribing someone from a list, except
-     * we keep track of the fact that they did not use the unsubscribe link
-     * in your campaigns or on your list preferences page.
-     * This is equivalent to manually excluding someone on the list members page.
-     * Someone who is excluded will no longer receive campaigns or flow
-     * emails for this list.
-     * Keep in mind, there is currently no API to un-exclude someone.
-     * Re-adding them will not un-exclude them. In order to remove this block,
-     * you must go to the members page for the list and manually change their status.
-     * POST /api/v1/list/{{ LIST_ID }}/members/exclude
-     *
-     * @param  string  $listId    The list id.
-     * @param  string  $email     The user email to unsubscribe.
-     * @param  integer $timestamp The time in seconds. -1 as default value not specified date.
-     * @return mixed   Null if the request fails or an stdclass object if is successful.
+     * POST https://a.klaviyo.com/api/v2/list/{LIST_ID}/subscribe
      */
-    public function unsubscribe($listId, $email, $timestamp = -1)
+    public function subscribe($listId, array $profiles)
     {
-        $formParams = [
+        foreach ($profiles as $profile) {
+            if (!array_key_exists('email', $profile)) {
+                throw new Exception('"email" key not found');
+            }
+        }
+        $options = [
             'form_params' => [
                 'api_key' => $this->apiKey,
-                'email'   => $email
+                'profiles' => $profiles
+            ]
+        ];
+        $response = $this->client->post("/api/v2/list/{$listId}/subscribe", [
+            RequestOptions::JSON => $options['form_params'],
+            $options
+        ]);
+        
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * GET https://a.klaviyo.com/api/v2/list/{LIST_ID}/subscribe
+     */
+    public function checkSubscriptions($listId, array $emails)
+    {
+        $options = [
+            'form_params' => [
+                'api_key' => $this->apiKey,
+                'emails'   => $emails
             ]
         ];
 
-        if ($timestamp !== -1) {
-            $formParams['form_params']['timestamp'] = $timestamp;
-        }
-
-        $response = $this->client->post(
-            "/api/v1/list/{$listId}/members/exclude",
-            $formParams
+        $response = $this->client->get(
+            "/api/v2/list/{$listId}/subscribe",
+            [
+                RequestOptions::JSON => $options['form_params'],
+                $options
+            ]
         );
+
+        return $this->sendResponseAsObject($response);
+    }
+
+    /**
+     * Unsubscribe and remove profiles from a list.
+     * DELETE https://a.klaviyo.com/api/v2/list/{LIST_ID}/subscribe
+     */
+    public function unsubscribe($listId, array $emails)
+    {
+        $options = [
+            'form_params' => [
+                'api_key' => $this->apiKey,
+                'emails'   => $emails
+            ]
+        ];
+
+        $response = $this->client->get(
+            "/api/v2/list/{$listId}/subscribe",
+            [
+                RequestOptions::JSON => $options['form_params'],
+                $options
+            ]
+        );
+
         return $this->sendResponseAsObject($response);
     }
 

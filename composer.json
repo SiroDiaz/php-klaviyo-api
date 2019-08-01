@@ -34,6 +34,8 @@
         "phpunit/phpunit": "^7.0"
     },
     "scripts": {
-  	    "test": "phpunit"
+  	    "test": "phpunit",
+        "phpcs": "phpcs --standard=PSR2 src -n",
+        "phpcbf": "phpcbf -v -p --standard=PSR2 src"
   	}
 }
