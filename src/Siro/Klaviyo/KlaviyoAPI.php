@@ -55,7 +55,7 @@ class KlaviyoAPI
         }
 
         if (!in_array($api, $this->apisAvailables)) {
-            $message = 'Avaiable APIs: '. implode(', ', $this->$apisAvailables);
+            $message = 'Avaiable APIs: '. implode(', ', $this->apisAvailables);
             throw new ApiNotFoundException($message);
         }
 
