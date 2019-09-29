@@ -325,7 +325,7 @@ class KlaviyoList extends ApiBase
             ]
         ];
 
-        $response = $this->client->get(
+        $response = $this->client->delete(
             "/api/v2/list/{$listId}/subscribe",
             [
                 RequestOptions::JSON => $options['form_params'],
