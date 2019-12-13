@@ -100,7 +100,7 @@ class KlaviyoEvent extends ApiBase
         ];
 
         $response = $this->client->get(
-            '/api/indentify',
+            '/api/identify',
             [
             'query' => [
                 'data' => base64_encode(json_encode($data))
@@ -132,7 +132,7 @@ class KlaviyoEvent extends ApiBase
         ];
 
         return $this->client->getAsync(
-            '/api/indentify',
+            '/api/identify',
             [
             'query' => [
                 'data' => base64_encode(json_encode($data))
