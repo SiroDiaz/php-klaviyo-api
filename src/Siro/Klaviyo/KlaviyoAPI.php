@@ -6,6 +6,17 @@ use Exception;
 use GuzzleHttp\Client;
 use Siro\Klaviyo\Exceptions\ApiNotFoundException;
 
+/**
+ * Class KlaviyoAPI
+ * @package Siro\Klaviyo
+ *
+ * @property KlaviyoEvent $event
+ * @property KlaviyoList $list
+ * @property KlaviyoProfile $profile
+ * @property KlaviyoMetric $metric
+ * @property KlaviyoTemplate $template
+ * @property KlaviyoCampaign $campaign
+ */
 class KlaviyoAPI
 {
     /**
