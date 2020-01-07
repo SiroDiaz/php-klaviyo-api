@@ -50,7 +50,7 @@ class KlaviyoCampaign extends ApiBase
         }
 
         $response = $this->client->post("/api/v1/campaigns", $requestParams);
-        
+
         return $this->sendResponseAsObject($response);
     }
 
@@ -107,7 +107,7 @@ class KlaviyoCampaign extends ApiBase
         }
 
         $response = $this->client->put("/api/v1/campaign/{$campaignId}", $requestParams);
-        
+
         return $this->sendResponseAsObject($response);
     }
 
@@ -129,7 +129,7 @@ class KlaviyoCampaign extends ApiBase
     }
 
     /**
-     * POST /api/v1/campaign/{{ CAMPAIGN_ID }}/send
+     * POST /api/v1/campaign/{{ CAMPAIGN_ID }}/schedule
      */
     public function schedule($campaignId, $sendTime)
     {
@@ -143,7 +143,9 @@ class KlaviyoCampaign extends ApiBase
         } else {
             $options['form_params']['send_time'] = $sendTime;
         }
-        $response = $this->client->post("/api/v1/campaign/{$campaignId}/send", $options);
+
+        $response = $this->client->post("/api/v1/campaign/{$campaignId}/schedule", $options);
+        return $this->sendResponseAsObject($response);
     }
 
     /**
