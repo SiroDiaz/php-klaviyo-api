@@ -77,7 +77,7 @@ class KlaviyoMetric extends ApiBase
             $data['query']['since'] = $since;
         }
 
-        $response = $this->client->get('/api/v1/metric/{$metricId}/timeline', $data);
+        $response = $this->client->get("/api/v1/metric/{$metricId}/timeline", $data);
         return $this->sendResponseAsObject($response);
     }
 
@@ -105,7 +105,7 @@ class KlaviyoMetric extends ApiBase
             $data['query']['where'] = json_encode(array_values($where));
         }
 
-        $response = $this->client->get('/api/v1/metric/{$metricId}/export', $data);
+        $response = $this->client->get("/api/v1/metric/{$metricId}/export", $data);
         return $this->sendResponseAsObject($response);
     }
 }
