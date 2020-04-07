@@ -42,7 +42,7 @@ A real example would be as i show here:
 use Siro\Klaviyo\KlaviyoAPI;
 
 $klaviyo = new KlaviyoAPI();
-$klaviyo->event->asyncTrack(
+$klaviyo->event->trackAsync(
     'register', [
         'email' => 'federico@gmail.com'
     ], []
