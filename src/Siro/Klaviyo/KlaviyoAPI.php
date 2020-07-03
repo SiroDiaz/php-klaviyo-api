@@ -28,6 +28,7 @@ class KlaviyoAPI
      * @var
      */
     private $client;
+
     const baseUrl = 'https://a.klaviyo.com';
     const apiBaseName = '\\Siro\\Klaviyo\\Klaviyo';
 
