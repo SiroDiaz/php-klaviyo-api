@@ -5,14 +5,22 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - nightly
 
 env:
   - DEPS=lowest
   - DEPS=latest
+  global:
+    - COMPOSER_ARGS="--no-interaction"
 
+jobs:
+  allow_failures:
+    - php: nightly
+      env:
+        - COMPOSER_ARGS="--no-interaction --refer-lowers"
 before_script:
-  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update --prefer-stable --no-interaction ; fi
-  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-stable --no-interaction --prefer-lowest ; fi
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update --prefer-stable $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-stable $COMPOSER_ARGS --prefer-lowest ; fi
 
 script:
   - composer test
