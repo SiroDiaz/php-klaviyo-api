@@ -1,5 +1,3 @@
-# Travis CI configuration
-
 language: php
 
 php:
@@ -8,8 +6,14 @@ php:
   - 7.3
   - 7.4
 
-before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
+env:
+  - DEPS=lowest
+  - DEPS=latest
 
-script: vendor/bin/phpunit
+before_script:
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update --prefer-stable --no-interaction ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-stable --no-interaction --prefer-lowest ; fi
+
+script:
+  - composer test
+  - composer phpcs
