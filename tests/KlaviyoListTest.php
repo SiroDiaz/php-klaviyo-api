@@ -28,7 +28,7 @@ class KlaviyoListTest extends TestCase
 
         $this->klaviyo->list->delete($list->list_id);
         $this->klaviyo->list->delete($list2->list_id);
-        $this->assertEquals(2, count($allLists));
+        $this->assertEquals(4, count($allLists));
     }
 
     public function testGet()
@@ -54,7 +54,7 @@ class KlaviyoListTest extends TestCase
         $this->klaviyo->list->delete($list->list_id);
 
         $allLists = $this->klaviyo->list->getLists();
-        $this->assertEquals(0, count($allLists));
+        $this->assertEquals(2, count($allLists));
     }
 
     public function testAddMember()
