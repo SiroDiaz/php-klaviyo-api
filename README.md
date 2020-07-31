@@ -11,7 +11,7 @@ PHP class format for make the usage user-friendly. Stuff like delete a list is a
 Installing php-klaviyo-api is simple. You just need Composer installed and added to the path. For install the
 current last version run:
 
-`composer require siro/php-klaviyo-api:"^1.4.0"`
+`composer require siro/php-klaviyo-api:"^1.5.0"`
 
 ## Usage
 
