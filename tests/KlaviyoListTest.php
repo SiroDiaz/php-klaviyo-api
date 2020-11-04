@@ -8,7 +8,7 @@ class KlaviyoListTest extends TestCase
 {
     private $klaviyo;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->klaviyo = new KlaviyoAPI('pk_7f0ccf9f003cfa6838556efbf44e318f4b');
 
