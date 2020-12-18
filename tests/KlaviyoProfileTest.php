@@ -8,7 +8,7 @@ class KlaviyoProfileTest extends TestCase
 {
     private $klaviyo;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->klaviyo = new KlaviyoAPI('pk_7f0ccf9f003cfa6838556efbf44e318f4b');
     }
@@ -35,7 +35,7 @@ class KlaviyoProfileTest extends TestCase
         $person = $this->klaviyo->profile->getMetrics('N9mVQC');
         $this->assertObjectHasAttribute('count', $person);
         $this->assertObjectHasAttribute('data', $person);
-        $this->assertInternalType('array', $person->data);
+        $this->assertIsArray($person->data);
     }
 
     public function testGetMetric()
@@ -44,6 +44,6 @@ class KlaviyoProfileTest extends TestCase
         $person = $this->klaviyo->profile->getMetric('N9mVQC', $registerMetric);
         $this->assertObjectHasAttribute('count', $person);
         $this->assertObjectHasAttribute('data', $person);
-        $this->assertInternalType('array', $person->data);
+        $this->assertIsArray($person->data);
     }
 }

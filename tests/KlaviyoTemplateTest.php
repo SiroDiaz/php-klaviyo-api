@@ -8,7 +8,7 @@ class KlaviyoTemplateTest extends TestCase
 {
     private $klaviyo;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->klaviyo = new KlaviyoAPI('pk_7f0ccf9f003cfa6838556efbf44e318f4b');
     }
@@ -70,7 +70,7 @@ class KlaviyoTemplateTest extends TestCase
         $this->klaviyo->template->delete($cloned->id);
 
         $this->assertObjectHasAttribute('total', $allTmpls);
-        $this->assertInternalType('array', $allTmpls->data);
+        $this->assertIsArray($allTmpls->data);
     }
 
     public function testDelete()
@@ -88,14 +88,14 @@ class KlaviyoTemplateTest extends TestCase
         $allTmpls = $this->klaviyo->template->getAll();
 
         $this->assertObjectHasAttribute('total', $allTmpls);
-        $this->assertInternalType('array', $allTmpls->data);
+        $this->assertIsArray( $allTmpls->data);
 
         $this->klaviyo->template->delete($template->id);
         $this->klaviyo->template->delete($cloned->id);
         $allTmpls = $this->klaviyo->template->getAll();
 
         $this->assertObjectHasAttribute('total', $allTmpls);
-        $this->assertInternalType('array', $allTmpls->data);
+        $this->assertIsArray( $allTmpls->data);
     }
 
     public function testUpdateName()
@@ -115,7 +115,7 @@ class KlaviyoTemplateTest extends TestCase
         $allTmpls = $this->klaviyo->template->getAll();
 
         $this->assertObjectHasAttribute('total', $allTmpls);
-        $this->assertInternalType('array', $allTmpls->data);
+        $this->assertIsArray($allTmpls->data);
     }
 
     /*
@@ -134,7 +134,7 @@ class KlaviyoTemplateTest extends TestCase
         $this->klaviyo->template->delete($template->id);
 
         // $this->assertEquals(7, $allTmpls->total);
-        // $this->assertInternalType('array', $allTmpls->data);
+        // $this->assertIsArray($allTmpls->data);
     }
     */
 }
