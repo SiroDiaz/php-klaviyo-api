@@ -44,19 +44,22 @@ class KlaviyoAPI
         'campaign'
     ];
 
-    public function __construct($apiKey)
+    public function __construct($apiKey, array $clientOptions = null)
     {
-        $this->apiKey = $apiKey;
-        $this->client = new Client(
-            [
+        $defaultClientOptions = [
             'base_uri' => KlaviyoAPI::baseUrl,
-            'timeout'  => 0,
-            ]
-        );
+            'timeout' => 0,
+        ];
+
+        $clientOptions = is_array($clientOptions)
+            ? array_merge($defaultClientOptions, $clientOptions) : $defaultClientOptions;
+
+        $this->apiKey = $apiKey;
+        $this->client = new Client($clientOptions);
     }
 
     /**
-     * @param $api
+     * @param string $api
      * @return mixed
      * @throws ApiNotFoundException
      */
