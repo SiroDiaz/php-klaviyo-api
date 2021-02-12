@@ -11,11 +11,11 @@ PHP class format for make the usage user-friendly. Stuff like delete a list is a
 Installing php-klaviyo-api is simple. You just need Composer installed and added to the path. For install the
 current last version run:
 
-`composer require siro/php-klaviyo-api:"^1.5.0"`
+`composer require siro/php-klaviyo-api:"^1.6.0"`
 
 ## Usage
 
-### API organization
+### API organization and usage
 
 The php-klaviyo-api is organized as the official Klaviyo API, really.
 If you want to access to event API you must do as follow:
@@ -43,11 +43,10 @@ use Siro\Klaviyo\KlaviyoAPI;
 
 $klaviyo = new KlaviyoAPI();
 $klaviyo->event->trackAsync(
-    'register', [
-        'email' => 'federico@gmail.com'
-    ], []
+    'register',
+    ['email' => 'federico@gmail.com'],
+    []
 );
-
 ```
 
 As you can see it is really easy. The code is good organized, with the same
@@ -59,8 +58,6 @@ This API is used to track events to Klaviyo. This is the main feature
 and you maybe would use it. By that reason i implemented this API wrapper
 in this way.
 For load it
-
-
 
 ## Contributing
 This project uses **PSR-4** coding standard. If you want to make a contribution it must be important run `make sniff` for checking
