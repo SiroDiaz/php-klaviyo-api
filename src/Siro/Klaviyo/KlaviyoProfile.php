@@ -39,7 +39,7 @@ class KlaviyoProfile extends ApiBase
         foreach ($properties as $property => $value) {
             $requestParams['form_params'][$property] = $value;
         }
-        
+
         $response = $this->client->put("/api/v1/person/{$personId}", $requestParams);
 
         return $this->sendResponseAsObject($response);
@@ -86,4 +86,24 @@ class KlaviyoProfile extends ApiBase
 
         return $this->sendResponseAsObject($response);
     }
+
+	/**
+	 * GET /api/v2/person/{{ PERSON_ID }}
+	 *
+	 * @param string $value
+	 * @param string $identifier - can be 'email', 'phone_number' or 'external_id'
+	 */
+	public function search( $value, $identifier = 'email' )
+	{
+		$response = $this->client->get( "/api/v2/people/search",
+			[
+				'query' => [
+					'api_key'   => $this->apiKey,
+					$identifier => $value
+				]
+			]
+		);
+
+		return $this->sendResponseAsObject( $response );
+	}
 }
